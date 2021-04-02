@@ -81,4 +81,29 @@ class CustomerSystem{
     /*******************************************************************
     *       ADDITIONAL METHODS MAY BE ADDED BELOW IF NECESSARY         *
     *******************************************************************/
+    
+    /*
+     * Description: Checks if the length of the inputted string matches/exceeds the specified length
+     * 
+     * @author - Murphy Lee
+     * @param sequence - The String that needs to be validated
+     * @param length - The minimum length that the String must be
+     * @return isValid - Boolean whose value depends on whether the String is long enough
+     * */
+
+    public static boolean isLongEnough(String sequence, int length) {
+        boolean isValid;   // Return value depends on validation
+
+        // Store length of sequence in an int variable
+        int sequenceLen = sequence.length();
+
+        // Set boolean to true or false after comparing the user-input length to the recommended length
+        if (sequenceLen >= length) {
+            isValid = true;
+        }
+        else {
+            isValid = false;
+        }
+        return isValid;
+    }
 }
