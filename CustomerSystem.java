@@ -52,14 +52,10 @@ class CustomerSystem{
         .concat("Enter menu option (1-9)\n")
         );
     }
-    /*
-    * This method may be edited to achieve the task however you like.
-    * The method may not nesessarily be a void return type
-    * This method may also be broken down further depending on your algorithm
-    */
 
     public static void enterCustomerInfo(){
     }
+
     /*
      * Description: Checks if the user-inputted postal code is valid - meaning it fulfills the length requirement & is found in CSV file
      * 
@@ -83,22 +79,13 @@ class CustomerSystem{
         return isExistingZip;
     }
 
-    /*
-    * This method may be edited to achieve the task however you like.
-    * The method may not nesessarily be a void return type
-    * This method may also be broken down further depending on your algorithm
-    */
     public static void validateCreditCard(){
     }
-    /*
-    * This method may be edited to achieve the task however you like.
-    * The method may not nesessarily be a void return type
-    * This method may also be broken down further depending on your algorithm
-    */
+
     public static void generateCustomerDataFile(){
     }
     /*******************************************************************
-    *       ADDITIONAL METHODS MAY BE ADDED BELOW IF NECESSARY         *
+    *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
     
     /*
@@ -109,7 +96,6 @@ class CustomerSystem{
      * @param length - The minimum length that the String must be
      * @return isValid - Boolean whose value depends on whether the String is long enough
      * */
-
     public static boolean isLongEnough(String sequence, int length) {
         boolean isValid;   // Return value depends on validation
 
@@ -158,7 +144,7 @@ class CustomerSystem{
             // Split line by using the "|" character as a delimiter - since "|" is a special character in Java, we need to escape it by using "\\"
             codeReader.useDelimiter("\\|");
             code = codeReader.next();
-            // If the user-input matches the postal code, the found variable will becomes true
+            // If the user-input matches the postal code, the found variable will be set to true
             if (postCode.equals(code)) {
                 foundInFile = true;
             }
