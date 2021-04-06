@@ -94,9 +94,9 @@ class CustomerSystem{
         }
 
         // Determine if the Luhn sum ends with 0, using the function
-        // boolean isValid = passesLuhnTest(creditNum); 
+        boolean isValid = passesLuhnTest(creditNum); 
 
-        return true;
+        return isValid;
     }
 
     public static void generateCustomerDataFile(){
@@ -194,4 +194,76 @@ class CustomerSystem{
         return reverse;
     }
 
+    /*
+     * Description: Checks if the user-inputted credit card is valid
+     * 
+     * @author - Murphy Lee
+     * @param creditNum - The user-inputted credit card
+     * @return validNum - A boolean whose value depends on if the credit card has a valid Luhn-sum
+     * */
+    public static boolean passesLuhnTest(String creditNum) {
+        int numLength = creditNum.length();   // Length of the credit card
+        double digit;          // Digit to be added to the sums
+        double digitDoubled;   // Digit that has been multiplied by 2
+        double digit1;         // First digit of a double digit number
+        double digit2;         // Second digit of a double digit number
+        double numReverse;     // Stores the reversed credit card number as an int
+        double sumOdd = 0;     // Sum of all the odd digits
+        double sumEven = 0;    // Sum of all the even digits
+        double sum;            // Contains the Luhn-sum
+
+        // Don't accept String with "." - indicates a decimal number
+        if (creditNum.indexOf(".") != -1) {
+            return false;
+        }
+
+        // Reverse the credit card number - using the reverseString method
+        String reversedNum = reverseString(creditNum);
+        System.out.println(reversedNum);
+
+        // Try to convert the number into a double
+        try {
+            numReverse = Double.parseDouble(reversedNum);
+        }
+        // If the a NumberFormatException error is thrown, return -1, signifying an error
+        catch (Exception e) {
+            // This means the user input is invalid, and false can be returned
+            return false;
+        }
+
+        // For loop that iterates over each digit of the number - use length of the String as a boundary
+        for (int i = 0; i < numLength; i++) {
+            // Find digit of number
+            digit = numReverse % 10;
+            System.out.println("Digit: " + digit);
+
+            // Find index of letter (not computer index - assuming first letter is 1) by subtracting counter from the length
+            if ((numLength - i) % 2 != 0) {
+                // For odd digits, we simply add to the odd pile sum
+                sumOdd += digit;
+            }
+            // Otherwise, it is an even index
+            else {
+                // Multiply the digit by 2
+                digitDoubled = digit * 2;
+                // Determine if the number multiplied by 2 is single-digit
+                if (Math.floor(digitDoubled) / 10 == 0) {
+                    sumEven += digitDoubled;
+                }
+                // Otherwise, it is a double digit number and must be split
+                else {
+                    digit1 = Math.floor(digitDoubled / 10);    // The tens digit
+                    digit2 = digitDoubled % 10;    // The ones digit
+                    sumEven += (digit1 + digit2);
+                }
+            }
+            // Take a digit off the credit card number and floor it - so it behaves similar to an int
+            numReverse = Math.floor(numReverse / 10);
+            System.out.println("Credit Card: " + numReverse);
+        }
+        sum = sumOdd + sumEven;
+        // A boolean whose value is determined by whether the sum ends with a zero
+        boolean validNum = (sum % 10 == 0);
+        return validNum;
+    }
 }
