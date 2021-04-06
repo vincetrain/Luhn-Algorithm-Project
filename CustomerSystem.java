@@ -79,7 +79,24 @@ class CustomerSystem{
         return isExistingZip;
     }
 
-    public static void validateCreditCard(){
+    /*
+    * Description: Checks if the user-inputted credit card is valid - meaning it fulfills the length requirement and passes the Luhn Algorithm
+    * 
+    * @param creditNum - An int containing the user-inputted credit card number
+    * return isValid - A boolean whose value depends on if the user-input meets both requirements
+    */
+    public static boolean validateCreditCard(String creditNum){  
+
+        // Check if the inputted credit card number is long enough - at least 9 characters
+        boolean validLen = isLongEnough(creditNum, 9);
+        if (validLen == false) {
+            return false;
+        }
+
+        // Determine if the Luhn sum ends with 0, using the function
+        // boolean isValid = passesLuhnTest(creditNum); 
+
+        return true;
     }
 
     public static void generateCustomerDataFile(){
@@ -144,6 +161,7 @@ class CustomerSystem{
             // Split line by using the "|" character as a delimiter - since "|" is a special character in Java, we need to escape it by using "\\"
             codeReader.useDelimiter("\\|");
             code = codeReader.next();
+
             // If the user-input matches the postal code, the found variable will be set to true
             if (postCode.equals(code)) {
                 foundInFile = true;
@@ -153,4 +171,27 @@ class CustomerSystem{
         reader.close();
         return foundInFile;
     }
+
+    /*
+     * Description: Reverses a user-inputted String
+     * 
+     * @author - Murphy Lee
+     * @param num - The String that needs to be reversed
+     * @return reverse - The String whose characters have been reversed
+     * */
+    public static String reverseString(String text) {
+        String reverse = "";  // Will store the reversed number
+        String digit;         // Placeholder for the digits that will be added
+
+        // Set a for loop that processes all digits - use the string length as a boundary
+        for (int i = 1; i <= text.length(); i++) {
+            // Extract each character in a String variable backwards - find index by subtracting i from the length
+            digit = String.valueOf(text.charAt(text.length() - i));
+
+            // Add new character to the reversed String variable
+            reverse = reverse.concat(digit);
+        }
+        return reverse;
+    }
+
 }
