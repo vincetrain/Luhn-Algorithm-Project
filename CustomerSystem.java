@@ -105,29 +105,7 @@ class CustomerSystem{
     *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
     
-    /*
-     * Description: Checks if the length of the inputted string matches/exceeds the specified length
-     * 
-     * @author - Murphy Lee
-     * @param sequence - The String that needs to be validated
-     * @param length - The minimum length that the String must be
-     * @return isValid - Boolean whose value depends on whether the String is long enough
-     * */
-    public static boolean isLongEnough(String sequence, int length) {
-        boolean isValid;   // Return value depends on validation
-
-        // Store length of sequence in an int variable
-        int sequenceLen = sequence.length();
-
-        // Set boolean to true or false after comparing the user-input length to the recommended length
-        if (sequenceLen >= length) {
-            isValid = true;
-        }
-        else {
-            isValid = false;
-        }
-        return isValid;
-    }
+    
 
     /*
      * Description: Checks if the user-inputted postal code is found in CSV file
@@ -170,28 +148,6 @@ class CustomerSystem{
 
         reader.close();
         return foundInFile;
-    }
-
-    /*
-     * Description: Reverses a user-inputted String
-     * 
-     * @author - Murphy Lee
-     * @param num - The String that needs to be reversed
-     * @return reverse - The String whose characters have been reversed
-     * */
-    public static String reverseString(String text) {
-        String reverse = "";  // Will store the reversed number
-        String digit;         // Placeholder for the digits that will be added
-
-        // Set a for loop that processes all digits - use the string length as a boundary
-        for (int i = 1; i <= text.length(); i++) {
-            // Extract each character in a String variable backwards - find index by subtracting i from the length
-            digit = String.valueOf(text.charAt(text.length() - i));
-
-            // Add new character to the reversed String variable
-            reverse = reverse.concat(digit);
-        }
-        return reverse;
     }
 
     /*
@@ -266,4 +222,50 @@ class CustomerSystem{
         boolean validNum = (sum % 10 == 0);
         return validNum;
     }
+    
+    /*
+     * Description: Checks if the length of the inputted string matches/exceeds the specified length
+     * 
+     * @author - Murphy Lee
+     * @param sequence - The String that needs to be validated
+     * @param length - The minimum length that the String must be
+     * @return isValid - Boolean whose value depends on whether the String is long enough
+     * */
+    public static boolean isLongEnough(String sequence, int length) {
+        boolean isValid;   // Return value depends on validation
+
+        // Store length of sequence in an int variable
+        int sequenceLen = sequence.length();
+
+        // Set boolean to true or false after comparing the user-input length to the recommended length
+        if (sequenceLen >= length) {
+            isValid = true;
+        }
+        else {
+            isValid = false;
+        }
+        return isValid;
+    }
+    
+    /*
+     * Description: Reverses a user-inputted String
+     * 
+     * @author - Murphy Lee
+     * @param num - The String that needs to be reversed
+     * @return reverse - The String whose characters have been reversed
+     * */
+    public static String reverseString(String text) {
+        String reverse = "";  // Will store the reversed number
+        String digit;         // Placeholder for the digits that will be added
+
+        // Set a for loop that processes all digits - use the string length as a boundary
+        for (int i = 1; i <= text.length(); i++) {
+            // Extract each character in a String variable backwards - find index by subtracting i from the length
+            digit = String.valueOf(text.charAt(text.length() - i));
+
+            // Add new character to the reversed String variable
+            reverse = reverse.concat(digit);
+        }
+        return reverse;
+    } 
 }
