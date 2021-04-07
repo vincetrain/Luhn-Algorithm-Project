@@ -58,8 +58,9 @@ class CustomerSystem{
     /*
      * Description: Takes user input on customer information and checks with user if information is correct.
      * 
-     * @author - Vincent Tran
+     * @author Vincent Tran
      * @param reader, userInput
+     * @throws FileNotFoundException
      * */
     public static void enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
         int counter = 0; 
