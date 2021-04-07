@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 class CustomerSystem{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         // Please do not edit any of these variables
         Scanner reader = new Scanner(System.in);
         String userInput, enterCustomerOption, generateCustomerOption, exitCondition;
@@ -19,6 +19,7 @@ class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
+        String fName, city, postCode, creditNum;
 
         do{
             printMenu();                                    // Printing out the main menu
@@ -27,7 +28,7 @@ class CustomerSystem{
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
 		        // Any necessary variables may be added to this if section, but nowhere else in the code
-                enterCustomerInfo();
+                enterCustomerInfo(reader, userInput);
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
@@ -42,6 +43,7 @@ class CustomerSystem{
         reader.close();
         System.out.println("Program Terminated");
     }
+
     public static void printMenu(){
         System.out.println("Customer and Sales System\n"
         .concat("1. Enter Customer Information\n")
@@ -52,8 +54,62 @@ class CustomerSystem{
         .concat("Enter menu option (1-9)\n")
         );
     }
+    
+    /*
+     * Description: Takes user input on customer information and checks with user if information is correct.
+     * 
+     * @author - Vincent Tran
+     * @param reader, userInput
+     * */
+    public static void enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
+        int counter = 0; 
+        String inputType = ""; 
+        while (counter >= 0) {
 
-    public static void enterCustomerInfo(){
+            // Because I can't use any data structures, I used a switch to emulate an array.
+            // This is done to determine which piece of data the user needs to input.
+
+            switch (counter) {
+                case 0:
+                    inputType = "full name: ";
+                    break;
+                case 1:
+                    inputType = "city: ";
+                    break;
+                case 2:
+                    inputType = "postal code: ";
+                    break;
+                case 3:
+                    inputType = "credit card number: ";
+                    break;
+                default:
+                    counter = -9001;
+            }
+
+            System.out.println("Please enter the customer's " + inputType);
+            reader = new Scanner(System.in);
+            userInput = reader.nextLine();
+
+            // reInput is triggered, but bugs. Skips user confirmation for some reason. Work on this later.
+
+            if (reInput(reader, userInput)) {  // Asks the user if the information they inputted is correct.
+
+                if (counter == 2) { // Checks if the user is supposed to postal information.
+                    userInput = userInput.toUpperCase();    // Prevents case errors.
+                    if (!validatePostalCode(userInput)) {
+                        counter--;  // Triggers re input by removing 1 from counter, hence restarting with the same input type.
+                    }
+                }
+                else if (counter == 3) {    // Checks if the user is supposed to postal information.
+                    userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
+                    if (!validateCreditCard(userInput)) {
+                        counter--;  // Triggers re input by removing 1 from counter, hence restarting with the same input type.
+                    }
+                }
+            
+                counter++;  // Tells program to proceed to next inputType
+            }
+        }
     }
 
     /*
@@ -268,4 +324,42 @@ class CustomerSystem{
         }
         return reverse;
     } 
+
+    /*
+    * Description: Prompts user if userInput is correct and reinputs accordingly.
+    *
+    * @author Vincent Tran
+    * @param reader, userInput
+    * @return needsInput
+    * */
+    public static boolean reInput(Scanner reader, String userInput) {
+
+        boolean needsInput = false;    // Initializes a Boolean variable as null, which will return to the program later to determine if re-input is required
+        String userConfirm = " "; // Initializes userConfirm string variable
+
+        // Asks user if input is correct
+        System.out.println("Is '" + userInput + "' Correct? y/n");
+
+        // While loop loops while needsInput is null
+        int loop = 1;
+        while (loop == 1) {
+            reader = new Scanner(System.in);    // Calls reader for input
+            userConfirm = reader.nextLine();  // Sets userConfirm as reader's input and lowercases for no case errors
+            userConfirm = userConfirm.toLowerCase();
+
+            if (userConfirm.equals("y")) {
+                needsInput = true;  // Sets to true and kills loop
+                loop = 0;
+            }
+            else if (userConfirm.equals("n")) {
+                needsInput = false; // Sets to false and kills loop
+                loop = 0;
+            }
+            else {
+                System.out.println("You have not entered y/n. Please try again.");  // Prompts user that invalid input has been entered.
+            }
+        }
+        // Returns needsInput
+        return needsInput;
+    }
 }
