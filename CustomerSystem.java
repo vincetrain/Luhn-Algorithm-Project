@@ -7,6 +7,8 @@ import java.util.Scanner;
 // More packages may be imported in the space below
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 
 class CustomerSystem{
     public static void main(String[] args) throws FileNotFoundException {
@@ -19,7 +21,7 @@ class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
-        String fName, city, postCode, creditNum;
+        String customInfo = "";
 
         do{
             printMenu();                                    // Printing out the main menu
@@ -28,11 +30,13 @@ class CustomerSystem{
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
 		        // Any necessary variables may be added to this if section, but nowhere else in the code
-                enterCustomerInfo(reader, userInput);
+
+                customInfo = enterCustomerInfo(reader, userInput);    
+
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                generateCustomerDataFile();
+                generateCustomerDataFile(customInfo);
             }
             else{
                 System.out.println("Please type in a valid option (A number from 1-9)");
@@ -61,56 +65,71 @@ class CustomerSystem{
      * @author Vincent Tran
      * @param reader, userInput
      * @throws FileNotFoundException
-     * */
-    public static void enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
-        int counter = 0; 
-        String inputType = ""; 
-        while (counter >= 0) {
+     * @return customInfo
+     */
+    public static String enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
 
-            // Because I can't use any data structures, I used a switch to emulate an array.
+        String inputType = ""; 
+        String customInfo = "";
+        int counter = 0;
+        int valid = 1;
+
+        while (counter<4) {
+
+            valid = 1;  // Sets valid to 1 to enable concatenation of strings.
+
+            // Because I can't use any data structures, I used an elif chain to emulate an array.
             // This is done to determine which piece of data the user needs to input.
 
-            switch (counter) {
-                case 0:
-                    inputType = "full name: ";
-                    break;
-                case 1:
-                    inputType = "city: ";
-                    break;
-                case 2:
-                    inputType = "postal code: ";
-                    break;
-                case 3:
-                    inputType = "credit card number: ";
-                    break;
-                default:
-                    counter = -9001;
+            if (counter == 0) {
+                inputType = "full name: ";
             }
+
+            else if (counter == 1) {
+                inputType = "city: ";
+            }
+
+            else if (counter == 2) {
+                inputType = "postal code: ";
+            }
+
+            else if (counter == 3) {
+                inputType = "credit card number: ";
+            }
+            
 
             System.out.println("Please enter the customer's " + inputType);
             reader = new Scanner(System.in);
             userInput = reader.nextLine();
 
-            // reInput is triggered, but bugs. Skips user confirmation for some reason. Work on this later.
 
             if (reInput(reader, userInput)) {  // Asks the user if the information they inputted is correct.
 
                 if (counter == 2) { // Checks if the user is supposed to postal information.
+                    userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
                     userInput = userInput.toUpperCase();    // Prevents case errors.
                     if (!validatePostalCode(userInput)) {
-                        counter--;  // Triggers re input by removing 1 from counter, hence restarting with the same input type.
+                        System.out.println("This postal code is invalid.");
+                        valid = 0;
                     }
                 }
-                else if (counter == 3) {    // Checks if the user is supposed to postal information.
+                else if (counter == 3) {    // Checks if the user is supposed to credit information.
                     userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
                     if (!validateCreditCard(userInput)) {
-                        counter--;  // Triggers re input by removing 1 from counter, hence restarting with the same input type.
+                        System.out.println("This credit card is invalid.");
+                        valid = 0;
                     }
                 }
-            
-                counter++;  // Tells program to proceed to next inputType
+
+                if (valid > 0) {    // Checks if the input was valid.
+                    customInfo = customInfo.concat(userInput + " ");
+                    counter++;
+                }
             }
+
         }
+        System.out.println(customInfo);
+        return customInfo;
     }
 
     /*
@@ -120,7 +139,7 @@ class CustomerSystem{
      * @param postCode - A String containing the user-inputted postal code
      * @throws FileNotFoundException - Exception raised when attempting to read CSV, thrown to enterCustomerInfo method
      * @return isExistingZip - a boolean whose value depends on if the zip code meets the requirements
-     * */
+     */
     public static boolean validatePostalCode(String postCode) throws FileNotFoundException {
         // Check if the inputted postal code is long enough - at least 3 characters
         boolean validLen = isLongEnough(postCode, 3);
@@ -139,6 +158,7 @@ class CustomerSystem{
     /*
     * Description: Checks if the user-inputted credit card is valid - meaning it fulfills the length requirement and passes the Luhn Algorithm
     * 
+    * @author - Murphy Lee
     * @param creditNum - An int containing the user-inputted credit card number
     * return isValid - A boolean whose value depends on if the user-input meets both requirements
     */
@@ -156,7 +176,15 @@ class CustomerSystem{
         return isValid;
     }
 
-    public static void generateCustomerDataFile(){
+    /*
+    * Description: Writes information taken from enterCustomerInfo() into a .csv file called customer_info.csv
+    *
+    * @author Vincent Tran
+    * @param customInfo
+    * @throws FileNotFoundException
+    */
+    public static void generateCustomerDataFile(String customInfo) throws FileNotFoundException {
+
     }
     /*******************************************************************
     *                        ADDITIONAL METHODS:                       *
