@@ -217,7 +217,89 @@ class CustomerSystem{
     *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
     
+    /*
+    * Description: Prompts user if userInput is correct and reinputs accordingly.
+    *
+    * @author Vincent Tran
+    * @param reader, userInput
+    * @return needsInput
+    * */
+    public static boolean reInput(Scanner reader, String userInput) {
+
+        boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
+        String userConfirm = " "; // Initializes userConfirm string variable
+
+        // Asks user if input is correct
+        System.out.println("Is '" + userInput + "' Correct? y/n");
+
+        // While loop loops while needsInput is null
+        int loop = 1;
+        while (loop == 1) {
+            reader = new Scanner(System.in);    // Calls reader for input
+            userConfirm = reader.nextLine();  // Sets userConfirm as reader's input and lowercases for no case errors
+            userConfirm = userConfirm.toLowerCase();
+
+            if (userConfirm.equals("y")) {
+                needsInput = true;  // Sets to true and kills loop
+                loop = 0;
+            }
+            else if (userConfirm.equals("n")) {
+                needsInput = false; // Sets to false and kills loop
+                loop = 0;
+            }
+            else {
+                System.out.println("You have not entered y/n. Please try again.");  // Prompts user that invalid input has been entered.
+            }
+        }
+        // Returns needsInput
+        return needsInput;
+    }
     
+    /*
+     * Description: Checks if the length of the inputted string matches/exceeds the specified length
+     * 
+     * @author - Murphy Lee
+     * @param sequence - The String that needs to be validated
+     * @param length - The minimum length that the String must be
+     * @return isValid - Boolean whose value depends on whether the String is long enough
+     * */
+    public static boolean isLongEnough(String sequence, int length) {
+        boolean isValid;   // Return value depends on validation
+
+        // Store length of sequence in an int variable
+        int sequenceLen = sequence.length();
+
+        // Set boolean to true or false after comparing the user-input length to the recommended length
+        if (sequenceLen >= length) {
+            isValid = true;
+        }
+        else {
+            isValid = false;
+        }
+        return isValid;
+    } 
+
+    /*
+     * Description: Reverses a user-inputted String
+     * 
+     * @author - Murphy Lee
+     * @param num - The String that needs to be reversed
+     * @return reverse - The String whose characters have been reversed
+     * */
+    public static String reverseString(String text) {
+        String reverse = "";  // Will store the reversed number
+        String digit;         // Placeholder for the digits that will be added
+
+        // Set a for loop that processes all digits - use the string length as a boundary
+        for (int i = 1; i <= text.length(); i++) {
+            // Extract each character in a String variable backwards - find index by subtracting i from the length
+            digit = String.valueOf(text.charAt(text.length() - i));
+
+            // Add new character to the reversed String variable
+            reverse = reverse.concat(digit);
+        }
+        return reverse;
+    }
 
     /*
      * Description: Checks if the user-inputted postal code is found in CSV file
@@ -257,7 +339,6 @@ class CustomerSystem{
                 foundInFile = true;
             }
         }
-
         reader.close();
         return foundInFile;
     }
@@ -294,7 +375,7 @@ class CustomerSystem{
             numReverse = Double.parseDouble(reversedNum);
         }
         // If the a NumberFormatException error is thrown, return -1, signifying an error
-        catch (Exception e) {
+        catch (NumberFormatException | NullPointerException e) {
             // This means the user input is invalid, and false can be returned
             return false;
         }
@@ -330,95 +411,9 @@ class CustomerSystem{
             System.out.println("Credit Card: " + numReverse);
         }
         sum = sumOdd + sumEven;
+
         // A boolean whose value is determined by whether the sum ends with a zero
         boolean validNum = (sum % 10 == 0);
         return validNum;
     }
-    
-    /*
-     * Description: Checks if the length of the inputted string matches/exceeds the specified length
-     * 
-     * @author - Murphy Lee
-     * @param sequence - The String that needs to be validated
-     * @param length - The minimum length that the String must be
-     * @return isValid - Boolean whose value depends on whether the String is long enough
-     * */
-    public static boolean isLongEnough(String sequence, int length) {
-        boolean isValid;   // Return value depends on validation
-
-        // Store length of sequence in an int variable
-        int sequenceLen = sequence.length();
-
-        // Set boolean to true or false after comparing the user-input length to the recommended length
-        if (sequenceLen >= length) {
-            isValid = true;
-        }
-        else {
-            isValid = false;
-        }
-        return isValid;
-    }
-    
-    /*
-     * Description: Reverses a user-inputted String
-     * 
-     * @author - Murphy Lee
-     * @param num - The String that needs to be reversed
-     * @return reverse - The String whose characters have been reversed
-     * */
-    public static String reverseString(String text) {
-        String reverse = "";  // Will store the reversed number
-        String digit;         // Placeholder for the digits that will be added
-
-        // Set a for loop that processes all digits - use the string length as a boundary
-        for (int i = 1; i <= text.length(); i++) {
-            // Extract each character in a String variable backwards - find index by subtracting i from the length
-            digit = String.valueOf(text.charAt(text.length() - i));
-
-            // Add new character to the reversed String variable
-            reverse = reverse.concat(digit);
-        }
-        return reverse;
-    } 
-
-    /*
-    * Description: Prompts user if userInput is correct and reinputs accordingly.
-    *
-    * @author Vincent Tran
-    * @param reader, userInput
-    * @return needsInput
-    * */
-    public static boolean reInput(Scanner reader, String userInput) {
-
-        boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
-        String userConfirm = " "; // Initializes userConfirm string variable
-
-        // Asks user if input is correct
-        System.out.println("Is '" + userInput + "' Correct? y/n");
-
-        // While loop loops while needsInput is null
-        int loop = 1;
-        while (loop == 1) {
-            reader = new Scanner(System.in);    // Calls reader for input
-            userConfirm = reader.nextLine();  // Sets userConfirm as reader's input and lowercases for no case errors
-            userConfirm = userConfirm.toLowerCase();
-
-            if (userConfirm.equals("y")) {
-                needsInput = true;  // Sets to true and kills loop
-                loop = 0;
-            }
-            else if (userConfirm.equals("n")) {
-                needsInput = false; // Sets to false and kills loop
-                loop = 0;
-            }
-            else {
-                System.out.println("You have not entered y/n. Please try again.");  // Prompts user that invalid input has been entered.
-            }
-        }
-        // Returns needsInput
-        return needsInput;
-    }
-
-
-
 }
