@@ -21,7 +21,7 @@ class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
-        String customInfo = "";
+        String customInfo = ""; // Saved customer information
 
         do{
             printMenu();                                    // Printing out the main menu
@@ -30,7 +30,6 @@ class CustomerSystem{
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
 		        // Any necessary variables may be added to this if section, but nowhere else in the code
-
                 customInfo = enterCustomerInfo(reader, userInput);    
 
             }
@@ -69,17 +68,17 @@ class CustomerSystem{
      */
     public static String enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
 
-        String inputType = ""; 
-        String customInfo = "";
-        int counter = 0;
-        int valid = 1;
+        String inputType = "";  // Blank string for inputType
+        String customInfo = ""; // Blank string for customInfo
+        int counter = 0;    // Counter variable used to keep track of what inputType is needed
+        boolean valid;  // Boolean variable that keeps track of input validity
 
         while (counter<4) {
 
-            valid = 1;  // Sets valid to 1 to enable concatenation of strings.
+            valid = true;  // Sets valid to 1 to enable concatenation of strings.
 
             // Because I can't use any data structures, I used an elif chain to emulate an array.
-            // This is done to determine which piece of data the user needs to input.
+            // This is done to determine which piece of data the user needs to input by switching between prompts. More optimized(?) and easier to read + work with.
 
             if (counter == 0) {
                 inputType = "full name: ";
@@ -93,7 +92,7 @@ class CustomerSystem{
                 inputType = "postal code: ";
             }
 
-            else if (counter == 3) {
+            else {
                 inputType = "credit card number: ";
             }
             
@@ -110,25 +109,27 @@ class CustomerSystem{
                     userInput = userInput.toUpperCase();    // Prevents case errors.
                     if (!validatePostalCode(userInput)) {
                         System.out.println("This postal code is invalid.");
-                        valid = 0;
+                        valid = false;  // Tells the program that this input was invalid.
                     }
                 }
                 else if (counter == 3) {    // Checks if the user is supposed to credit information.
                     userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
                     if (!validateCreditCard(userInput)) {
                         System.out.println("This credit card is invalid.");
-                        valid = 0;
+                        valid = false;  // Tells the program that this input was invalid.
                     }
                 }
 
-                if (valid > 0) {    // Checks if the input was valid.
-                    customInfo = customInfo.concat(userInput + " ");
-                    counter++;
+                if (!valid) {    // Checks if the input was valid.
+                    customInfo = customInfo.concat(userInput);  // Concatenates into customInfo string to be saved later
+                    if (counter < 3) {
+                        customInfo = customInfo.concat(" | ");  // Adds '|' between information in customInfo for better readability and easier reusage.
+                    }
+                    counter++;  // Tells program that value has been entered, proceeding to next inputType.
                 }
             }
 
         }
-        System.out.println(customInfo);
         return customInfo;
     }
 
@@ -184,6 +185,18 @@ class CustomerSystem{
     * @throws FileNotFoundException
     */
     public static void generateCustomerDataFile(String customInfo) throws FileNotFoundException {
+
+        String fileName = "customer_info.csv";
+        File file = new File(fileName);
+        PrintWriter output = new PrintWriter(file);
+
+        output.append(customInfo);
+        output.println("");
+
+        System.out.println("Written to " + fileName + ".");
+
+        output.close(); 
+
 
     }
     /*******************************************************************
@@ -363,7 +376,7 @@ class CustomerSystem{
     * */
     public static boolean reInput(Scanner reader, String userInput) {
 
-        boolean needsInput = false;    // Initializes a Boolean variable as null, which will return to the program later to determine if re-input is required
+        boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
         String userConfirm = " "; // Initializes userConfirm string variable
 
         // Asks user if input is correct
@@ -391,4 +404,7 @@ class CustomerSystem{
         // Returns needsInput
         return needsInput;
     }
+
+
+
 }
