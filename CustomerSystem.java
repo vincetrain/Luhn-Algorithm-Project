@@ -123,7 +123,7 @@ class CustomerSystem{
                 if (!valid) {    // Checks if the input was valid.
                     customInfo = customInfo.concat(userInput);  // Concatenates into customInfo string to be saved later
                     if (counter < 3) {
-                        customInfo = customInfo.concat(" | ");  // Adds '|' between information in customInfo for better readability and easier reusage.
+                        customInfo = customInfo.concat(", ");  // Adds ', ' between information in customInfo to support CSV formatting.
                     }
                     counter++;  // Tells program that value has been entered, proceeding to next inputType.
                 }
