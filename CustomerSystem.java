@@ -203,7 +203,43 @@ class CustomerSystem{
     *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
     
-    
+    /*
+    * Description: Prompts user if userInput is correct and reinputs accordingly.
+    *
+    * @author Vincent Tran
+    * @param reader, userInput
+    * @return needsInput
+    * */
+    public static boolean reInput(Scanner reader, String userInput) {
+
+        boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
+        String userConfirm = " "; // Initializes userConfirm string variable
+
+        // Asks user if input is correct
+        System.out.println("Is '" + userInput + "' Correct? y/n");
+
+        // While loop loops while needsInput is null
+        int loop = 1;
+        while (loop == 1) {
+            reader = new Scanner(System.in);    // Calls reader for input
+            userConfirm = reader.nextLine();  // Sets userConfirm as reader's input and lowercases for no case errors
+            userConfirm = userConfirm.toLowerCase();
+
+            if (userConfirm.equals("y")) {
+                needsInput = true;  // Sets to true and kills loop
+                loop = 0;
+            }
+            else if (userConfirm.equals("n")) {
+                needsInput = false; // Sets to false and kills loop
+                loop = 0;
+            }
+            else {
+                System.out.println("You have not entered y/n. Please try again.");  // Prompts user that invalid input has been entered.
+            }
+        }
+        // Returns needsInput
+        return needsInput;
+    }
 
     /*
      * Description: Checks if the user-inputted postal code is found in CSV file
@@ -367,43 +403,7 @@ class CustomerSystem{
         return reverse;
     } 
 
-    /*
-    * Description: Prompts user if userInput is correct and reinputs accordingly.
-    *
-    * @author Vincent Tran
-    * @param reader, userInput
-    * @return needsInput
-    * */
-    public static boolean reInput(Scanner reader, String userInput) {
-
-        boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
-        String userConfirm = " "; // Initializes userConfirm string variable
-
-        // Asks user if input is correct
-        System.out.println("Is '" + userInput + "' Correct? y/n");
-
-        // While loop loops while needsInput is null
-        int loop = 1;
-        while (loop == 1) {
-            reader = new Scanner(System.in);    // Calls reader for input
-            userConfirm = reader.nextLine();  // Sets userConfirm as reader's input and lowercases for no case errors
-            userConfirm = userConfirm.toLowerCase();
-
-            if (userConfirm.equals("y")) {
-                needsInput = true;  // Sets to true and kills loop
-                loop = 0;
-            }
-            else if (userConfirm.equals("n")) {
-                needsInput = false; // Sets to false and kills loop
-                loop = 0;
-            }
-            else {
-                System.out.println("You have not entered y/n. Please try again.");  // Prompts user that invalid input has been entered.
-            }
-        }
-        // Returns needsInput
-        return needsInput;
-    }
+    
 
 
 
