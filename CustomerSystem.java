@@ -6,12 +6,15 @@
 import java.util.Scanner;
 // More packages may be imported in the space below
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 
 class CustomerSystem{
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException { // I use IOException instead of FileNotFound because IOException already includes FileNotFound, and I need it for my file writing.
         // Please do not edit any of these variables
         Scanner reader = new Scanner(System.in);
         String userInput, enterCustomerOption, generateCustomerOption, exitCondition;
@@ -31,7 +34,6 @@ class CustomerSystem{
                 // Only the line below may be editted based on the parameter list and how you design the method return
 		        // Any necessary variables may be added to this if section, but nowhere else in the code
                 customInfo = enterCustomerInfo(reader, userInput);    
-
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
@@ -68,8 +70,8 @@ class CustomerSystem{
      */
     public static String enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
 
-        String inputType = "";  // Blank string for inputType
-        String customInfo = ""; // Blank string for customInfo
+        String inputType;  // Used to determine what info customer needs to input later
+        String customInfo = ""; // Blank string for customInfo. Resets customInfo to take new input.
         int counter = 0;    // Counter variable used to keep track of what inputType is needed
         boolean valid;  // Boolean variable that keeps track of input validity
 
@@ -80,8 +82,8 @@ class CustomerSystem{
             // Because I can't use any data structures, I used an elif chain to emulate an array.
             // This is done to determine which piece of data the user needs to input by switching between prompts. More optimized(?) and easier to read + work with.
 
-            if (counter == 0) {
-                inputType = "full name: ";
+            if (counter == 0) { // Checks on counter
+                inputType = "full name: ";  // Changes inputType to prompt for fullName
             }
 
             else if (counter == 1) {
@@ -104,23 +106,16 @@ class CustomerSystem{
 
             if (reInput(reader, userInput)) {  // Asks the user if the information they inputted is correct.
 
-                if (counter == 2) { // Checks if the user is supposed to postal information.
-                    userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
-                    userInput = userInput.toUpperCase();    // Prevents case errors.
-                    if (!validatePostalCode(userInput)) {
-                        System.out.println("This postal code is invalid.");
-                        valid = false;  // Tells the program that this input was invalid.
-                    }
+                if (counter == 2 && !validatePostalCode(userInput.replaceAll("\\s", "").toUpperCase())) { // Checks if the user is supposed to postal information. Also removes spaces and converts to uppercase to avoid errors
+                    System.out.println("This postal code is invalid.");
+                    valid = false;  // Tells the program that this input was invalid.
                 }
-                else if (counter == 3) {    // Checks if the user is supposed to credit information.
-                    userInput = userInput.replaceAll("\\s", ""); // Removes any imminent white spaces to prevent error.
-                    if (!validateCreditCard(userInput)) {
-                        System.out.println("This credit card is invalid.");
-                        valid = false;  // Tells the program that this input was invalid.
-                    }
+                else if (counter == 3 && !validateCreditCard(userInput.replaceAll("\\s", ""))) {    // Checks if the user is supposed to credit information.
+                    System.out.println("This credit card is invalid.");
+                    valid = false;  // Tells the program that this input was invalid.
                 }
 
-                if (!valid) {    // Checks if the input was valid.
+                if (valid) {    // Checks if the input was valid.
                     customInfo = customInfo.concat(userInput);  // Concatenates into customInfo string to be saved later
                     if (counter < 3) {
                         customInfo = customInfo.concat(", ");  // Adds ', ' between information in customInfo to support CSV formatting.
@@ -130,6 +125,7 @@ class CustomerSystem{
             }
 
         }
+
         return customInfo;
     }
 
@@ -161,7 +157,7 @@ class CustomerSystem{
     * 
     * @author - Murphy Lee
     * @param creditNum - An int containing the user-inputted credit card number
-    * return isValid - A boolean whose value depends on if the user-input meets both requirements
+    * @return isValid - A boolean whose value depends on if the user-input meets both requirements
     */
     public static boolean validateCreditCard(String creditNum){  
 
@@ -182,23 +178,41 @@ class CustomerSystem{
     *
     * @author Vincent Tran
     * @param customInfo
-    * @throws FileNotFoundException
+    * @throws IOException
     */
-    public static void generateCustomerDataFile(String customInfo) throws FileNotFoundException {
+    public static void generateCustomerDataFile(String customInfo) throws IOException {
 
         String fileName = "customer_info.csv";
         File file = new File(fileName);
-        PrintWriter output = new PrintWriter(file);
 
-        output.append(customInfo);
+        // Checking if the file exists, and creating a new file if it doesn't exist
+        if (!file.exists()) { // file.exists is a boolean. It checks if the boolean is false here and executes file creation.
+            System.out.println(fileName + "does not exist. Creating a new file with the same name");
+            file.createNewFile();
+        }
+
+        try {
+        // Initializing writers
+        FileWriter fileWriter = new FileWriter(file,true);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        PrintWriter output = new PrintWriter(bufferedWriter);
+
+        // Printing customer info into a new line in csv file
+        output.print(customInfo);
         output.println("");
 
-        System.out.println("Written to " + fileName + ".");
-
+        // Closing the writer
         output.close(); 
 
+        // Telling the user that the file has successfully been written to.
+        System.out.println("Written to " + fileName + ".");
+        }
 
+        catch (Exception IOException) { // I catch IOException instead of FileNotFoundException because IOException catches not only FileNotFound, but many other related exceptions too.
+            System.out.println("An error has occured while writing to " + fileName);
+        }
     }
+
     /*******************************************************************
     *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
