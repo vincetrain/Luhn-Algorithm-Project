@@ -494,7 +494,6 @@ class CustomerSystem{
 
         // Reverse the credit card number - using the reverseString method
         String reversedNum = reverseString(creditNum);
-        System.out.println(reversedNum);
 
         // Try to convert the number into a double
         try {
@@ -510,7 +509,6 @@ class CustomerSystem{
         for (int i = 0; i < numLength; i++) {
             // Find digit of number
             digit = numReverse % 10;
-            System.out.println("Digit: " + digit);
 
             // Find index of letter (not computer index - assuming first letter is 1) by subtracting counter from the length
             if ((numLength - i) % 2 != 0) {
@@ -532,9 +530,8 @@ class CustomerSystem{
                     sumEven += (digit1 + digit2);
                 }
             }
-            // Take a digit off the credit card number and floor it - so it behaves similar to an int
+            // Take a digit off the credit card number and floor it - so it behaves similarly to an int
             numReverse = Math.floor(numReverse / 10);
-            System.out.println("Credit Card: " + numReverse);
         }
         sum = sumOdd + sumEven;
 
