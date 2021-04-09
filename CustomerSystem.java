@@ -58,13 +58,13 @@ class CustomerSystem{
         );
     }
     
-    /*
-     * Description: Takes user input on customer information and checks with user if information is correct.
+    /**
+     * Lets the user enter information about a customer and writes it to a file of their choice.
      * 
      * @author Vincent Tran
-     * @param reader, userInput
-     * @throws FileNotFoundException
-     * @return customInfo
+     * @param reader
+     * @param userInput
+     * @throws IOException
      */
     public static void enterCustomerInfo(Scanner reader, String userInput) throws IOException{
 
@@ -175,13 +175,13 @@ class CustomerSystem{
         return isValid;
     }
 
-    /*
-    * Description: Writes information taken from enterCustomerInfo() into a .csv file called customer_info.csv
-    *
-    * @author Vincent Tran
-    * @param customInfo
-    * @throws IOException
-    */
+    /**
+     * Generates a file that the user can later input information into.
+     * 
+     * @author Vincent Tran
+     * @param reader
+     * @throws IOException
+     */
     public static void generateCustomerDataFile(Scanner reader) throws IOException {
 
         String fileDir; // The directory of the file
@@ -222,13 +222,14 @@ class CustomerSystem{
     *                        ADDITIONAL METHODS:                       *
     *******************************************************************/
     
-    /*
-    * Description: Prompts user if userInput is correct and reinputs accordingly.
-    *
-    * @author Vincent Tran
-    * @param reader, userInput
-    * @return needsInput
-    * */
+    /**
+     * Prompts the user of whether or not they meant to input something and triggers reinput if they didn't.
+     * 
+     * @author Vincent Tran
+     * @param reader
+     * @param userInput
+     * @return needsInput
+     */
     public static boolean reInput(Scanner reader, String userInput) {
 
         boolean needsInput = false;    // Initializes a Boolean variable, which will return to the program later to determine if re-input is required
@@ -260,16 +261,14 @@ class CustomerSystem{
         return needsInput;
     }
 
-    /*
-    * Description: Generates a unique identifier for each customer that starts at 1.
-    * <p>
-    * Reads from a customer information file to determine latest ID and creates a new ID to use for a customer.
-    * 
-    * @author Vincent Tran
-    * @params fileDir
-    * @throws FileNotFoundException
-    * @returns uniqueID
-    */
+    /**
+     * Generates a unique customerID for a specifed file.
+     * 
+     * @author Vincent Tran
+     * @param fileDir
+     * @return strUniqueID
+     * @throws FileNotFoundException
+     */
     public static String generateID(String fileDir) throws FileNotFoundException {
         int uniqueID = 1;   // The unique ID that will be returned later for storage.
         String strUniqueID;
@@ -295,6 +294,13 @@ class CustomerSystem{
         return strUniqueID;
     }
 
+    /**
+     * Prompts the user with a list of files and asks them to select an available file.
+     * 
+     * @author Vincent Tran
+     * @return desiredFile
+     * @throws FileNotFoundException
+     */
     public static String fileSelect() throws FileNotFoundException {
         String desiredFile = "";
 
@@ -342,6 +348,15 @@ class CustomerSystem{
     
     }
 
+
+    /**
+     * Writes information to a specified file.
+     * 
+     * @author Vincent Tran
+     * @param customInfo
+     * @param fileDir
+     * @throws IOException
+     */
     public static void writeToFile(String customInfo, String fileDir) throws IOException {
         try {
             // Initializing writers
