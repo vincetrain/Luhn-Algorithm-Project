@@ -306,6 +306,8 @@ class CustomerSystem{
 
         String data;    // Used to check what each line contains
         int optionCount = 0;
+        int optionChoice;
+        int lineNum;
 
         System.out.println("Available files:");
 
@@ -322,27 +324,55 @@ class CustomerSystem{
         }
         fileReader.close();
 
-        // Breaks if available files do not exist
+        // Returns as error if there are no files available.
 
         if (optionCount < 1) {
             System.out.println("ERROR: No files available to save into. Please GENERATE A CUSTOMER DATA FILE.");
             return "error";
         }
 
-        // Prompts user to select what file to save into.
 
-        System.out.println("What number file do you wish to store data into?");
-        Scanner userInput = new Scanner(System.in);
-        int optionChoice = userInput.nextInt();
+        // Try and catch exception handling to kill any input mismatch possibilities.
 
-        // Determines which file matches user input
-        // BUGS!!!! always selects file 1 for some reason???????
-        for (int i = 0; i <= optionChoice; i++) {
-            fileReader = new Scanner(file); // Reads from the file
-            desiredFile = fileReader.nextLine();   // Reads line information
-            fileReader.close();
+        try {
+            boolean loop = true;    // Tells program to loop following while loop. Used for reinput
+            // While (loop) [haha get it] for re input.
+            while (loop) {
+
+                // Asks user to select what file they want
+                if (optionCount > 1) {
+                    System.out.println("What number file do you wish to store data into?");
+                    Scanner userInput = new Scanner(System.in);
+                    optionChoice = userInput.nextInt();
+                }
+                else {  // skips prompt if there is only 1 input
+                    optionChoice = 1;
+                }
+
+                // Checks if file exists
+                if (optionChoice > 0 && optionChoice <= optionCount) {
+                    fileReader = new Scanner(file); // Reopens scanner
+                    lineNum = 0;
+
+                    // Uses lineNum to count how many lines have been read and compares it to what user has selected.
+                    while (lineNum <= optionChoice && fileReader.hasNextLine()) {
+                        desiredFile = fileReader.nextLine();   // Reads line information
+                        lineNum++;
+                    }
+                    fileReader.close(); // Closes scanner
+                    
+                    loop = false;   // Kills loop
+                }
+
+                // If file does not exist, prompt user with error:
+                else {
+                    System.out.println("ERROR: You have selected a file that does not exist.");
+                }
+            }
         }
-        
+        catch (Exception inputMismatchException) {  // Catches if there is an invalid input.
+            System.out.println("ERROR: You have entered an invalid input. Please try again.");
+        }
 
         return desiredFile;
     
