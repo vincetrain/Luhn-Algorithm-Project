@@ -215,7 +215,6 @@ class CustomerSystem{
         else {
             System.out.println("A file with the same name already exists in this directory.");
         }
-
     }
 
     /*******************************************************************
@@ -347,7 +346,6 @@ class CustomerSystem{
         return desiredFile;
     
     }
-
 
     /**
      * Writes information to a specified file.
