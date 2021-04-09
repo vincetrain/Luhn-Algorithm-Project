@@ -24,8 +24,6 @@ class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
-        String customInfo = ""; // Saved customer information
-
         do{
             printMenu();                                    // Printing out the main menu
             userInput = reader.nextLine();                  // User selection from the menu
@@ -33,11 +31,11 @@ class CustomerSystem{
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
 		        // Any necessary variables may be added to this if section, but nowhere else in the code
-                customInfo = enterCustomerInfo(reader, userInput);    
+                enterCustomerInfo(reader, userInput);    
             }
             else if (userInput.equals(generateCustomerOption)) {
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                generateCustomerDataFile(customInfo);
+                generateCustomerDataFile(reader);
             }
             else{
                 System.out.println("Please type in a valid option (A number from 1-9)");
@@ -68,12 +66,19 @@ class CustomerSystem{
      * @throws FileNotFoundException
      * @return customInfo
      */
-    public static String enterCustomerInfo(Scanner reader, String userInput) throws FileNotFoundException{
+    public static void enterCustomerInfo(Scanner reader, String userInput) throws IOException{
+
+        // Prompts user to input what file they wish to save into
+        String fileDir = fileSelect();
+        if (fileDir.equals("error")) {  // If error is returned, exit method.
+            return;
+        }
 
         String inputType;  // Used to determine what info customer needs to input later
-        String customInfo = ""; // Blank string for customInfo. Resets customInfo to take new input.
         int counter = 0;    // Counter variable used to keep track of what inputType is needed
         boolean valid;  // Boolean variable that keeps track of input validity
+
+        String uniqueID = generateID(fileDir);
 
         while (counter<4) {
 
@@ -116,17 +121,14 @@ class CustomerSystem{
                 }
 
                 if (valid) {    // Checks if the input was valid.
-                    customInfo = customInfo.concat(userInput);  // Concatenates into customInfo string to be saved later
-                    if (counter < 3) {
-                        customInfo = customInfo.concat(", ");  // Adds ', ' between information in customInfo to support CSV formatting.
-                    }
+                    uniqueID = uniqueID.concat(", " + userInput);  // Concatenates into customInfo string to be saved later
                     counter++;  // Tells program that value has been entered, proceeding to next inputType.
                 }
             }
 
         }
 
-        return customInfo;
+        writeToFile(uniqueID, fileDir);
     }
 
     /*
@@ -180,37 +182,40 @@ class CustomerSystem{
     * @param customInfo
     * @throws IOException
     */
-    public static void generateCustomerDataFile(String customInfo) throws IOException {
+    public static void generateCustomerDataFile(Scanner reader) throws IOException {
 
-        String fileName = "customer_info.csv";
-        File file = new File(fileName);
+        String fileDir; // The directory of the file
+        String fileName;    // The name of the file
+
+        // Asks user for file directory
+        System.out.println("Please input the file directory you wish to save to. (Leave blank to save to program directory)");
+        reader = new Scanner(System.in);
+        fileDir = reader.nextLine();
+
+        // Asks user for file name
+        System.out.println("Please input the name of the file you wish to create or access. (Leave blank to save as customer_info.csv)");
+        reader = new Scanner(System.in);
+        fileName = reader.nextLine();
+
+        if (fileName.equals("")) {
+            fileName = "customer_info";
+        }
+
+        fileDir = fileDir.concat(fileName + ".csv");
+
+        System.out.println(fileDir);
+        File file = new File(fileDir);
 
         // Checking if the file exists, and creating a new file if it doesn't exist
         if (!file.exists()) { // file.exists is a boolean. It checks if the boolean is false here and executes file creation.
-            System.out.println(fileName + "does not exist. Creating a new file with the same name");
+            System.out.println("Created 1 file at " + fileDir);
             file.createNewFile();
+            writeToFile(fileDir, "dataLocations.txt");
+        }
+        else {
+            System.out.println("A file with the same name already exists in this directory.");
         }
 
-        try {
-        // Initializing writers
-        FileWriter fileWriter = new FileWriter(file,true);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        PrintWriter output = new PrintWriter(bufferedWriter);
-
-        // Printing customer info into a new line in csv file
-        output.print(customInfo);
-        output.println("");
-
-        // Closing the writer
-        output.close(); 
-
-        // Telling the user that the file has successfully been written to.
-        System.out.println("Written to " + fileName + ".");
-        }
-
-        catch (Exception IOException) { // I catch IOException instead of FileNotFoundException because IOException catches not only FileNotFound, but many other related exceptions too.
-            System.out.println("An error has occured while writing to " + fileName);
-        }
     }
 
     /*******************************************************************
@@ -253,6 +258,112 @@ class CustomerSystem{
         }
         // Returns needsInput
         return needsInput;
+    }
+
+    /*
+    * Description: Generates a unique identifier for each customer that starts at 1.
+    * <p>
+    * Reads from a customer information file to determine latest ID and creates a new ID to use for a customer.
+    * 
+    * @author Vincent Tran
+    * @params fileDir
+    * @throws FileNotFoundException
+    * @returns uniqueID
+    */
+    public static String generateID(String fileDir) throws FileNotFoundException {
+        int uniqueID = 1;   // The unique ID that will be returned later for storage.
+        String strUniqueID;
+        String data;    // Used to check what each line contains
+        File file = new File(fileDir); // Opens file for reading
+
+        Scanner idFetcher;
+        Scanner fileReader = new Scanner(file); // Reads from the file
+
+        while (fileReader.hasNextLine()) {  // Reads until there are no more lines
+            data = fileReader.nextLine();   // Reads line information
+            idFetcher = new Scanner(data);
+            
+            // Using delimiter method to determine latest ID
+            idFetcher.useDelimiter(",");
+            uniqueID = idFetcher.nextInt();
+            uniqueID++;
+        }
+
+        fileReader.close();
+
+        strUniqueID = "" + uniqueID;    // converts to string so we can return this
+        return strUniqueID;
+    }
+
+    public static String fileSelect() throws FileNotFoundException {
+        String desiredFile = "";
+
+        String data;    // Used to check what each line contains
+        int optionCount = 0;
+
+        System.out.println("Available files:");
+
+        File file = new File("dataLocations.txt"); // Opens file for reading
+
+        Scanner fileReader = new Scanner(file); // Reads from the file
+
+        // Lists all file options to save into
+
+        while (fileReader.hasNextLine()) {  // Reads until there are no more lines
+            optionCount++;
+            data = fileReader.nextLine();   // Reads line information
+            System.out.println(optionCount + " " + data); // Displays available files to save into
+        }
+        fileReader.close();
+
+        // Breaks if available files do not exist
+
+        if (optionCount < 1) {
+            System.out.println("ERROR: No files available to save into. Please GENERATE A CUSTOMER DATA FILE.");
+            return "error";
+        }
+
+        // Prompts user to select what file to save into.
+
+        System.out.println("What number file do you wish to store data into?");
+        Scanner userInput = new Scanner(System.in);
+        int optionChoice = userInput.nextInt();
+
+        // Determines which file matches user input
+        // BUGS!!!! always selects file 1 for some reason???????
+        for (int i = 0; i <= optionChoice; i++) {
+            fileReader = new Scanner(file); // Reads from the file
+            desiredFile = fileReader.nextLine();   // Reads line information
+            fileReader.close();
+        }
+        
+
+        return desiredFile;
+    
+    }
+
+    public static void writeToFile(String customInfo, String fileDir) throws IOException {
+        try {
+            // Initializing writers
+            File file = new File(fileDir);
+            FileWriter fileWriter = new FileWriter(file,true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter output = new PrintWriter(bufferedWriter);
+    
+            // Printing customer info into a new line in csv file
+            output.print(customInfo);
+            output.println("");
+    
+            // Closing the writer
+            output.close(); 
+    
+            // Telling the user that the file has successfully been written to.
+            System.out.println("Written to " + fileDir + ".");
+            }
+    
+        catch (Exception IOException) { // I catch IOException instead of FileNotFoundException because IOException catches not only FileNotFound, but many other related exceptions too.
+                System.out.println("An error has occured while writing to " + fileDir);
+        }
     }
     
     /*
@@ -416,4 +527,5 @@ class CustomerSystem{
         boolean validNum = (sum % 10 == 0);
         return validNum;
     }
+
 }
