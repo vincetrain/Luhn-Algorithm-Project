@@ -183,8 +183,7 @@ class CustomerSystem{
      * @throws IOException
      */
     public static void generateCustomerDataFile(Scanner reader) throws IOException {
-
-        String fileDir; // The directory of the file
+        String fileDir; // The dir of the file
         String fileName;    // The name of the file
 
         // Asks user for file directory
@@ -197,20 +196,35 @@ class CustomerSystem{
         reader = new Scanner(System.in);
         fileName = reader.nextLine();
 
+        // Get the path separator
+        String separator = File.separator;
+
+        // If file name is not given, set to default
         if (fileName.equals("")) {
             fileName = "customer_info";
         }
 
-        fileDir = fileDir.concat(fileName + ".csv");
+        fileName = fileName.concat(".csv");
 
-        System.out.println(fileDir);
-        File file = new File(fileDir);
+        // If file directory is given, add to file name
+        if (!fileDir.equals("")) {
+            fileName = fileDir + separator + fileName;
+        }
+        // make directory
+        new File(fileDir).mkdirs();
+
+        // Make file to get path
+        File name = new File(fileName);
+        String absolute = name.getAbsolutePath();
+      
+        // Make file in the specified path
+        File actualFile = new File(absolute);
 
         // Checking if the file exists, and creating a new file if it doesn't exist
-        if (!file.exists()) { // file.exists is a boolean. It checks if the boolean is false here and executes file creation.
-            System.out.println("Created 1 file at " + fileDir);
-            file.createNewFile();
-            writeToFile(fileDir, "dataLocations.txt");
+        if (!actualFile.exists()) { // file.exists is a boolean. It checks if the boolean is false here and executes file creation.
+            System.out.println("Created 1 file at " + actualFile);
+            actualFile.createNewFile();
+            writeToFile(absolute, "dataLocations.txt");
         }
         else {
             System.out.println("A file with the same name already exists in this directory.");
